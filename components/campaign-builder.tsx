@@ -817,8 +817,8 @@ export default function CampaignBuilder({ mode, campaignId }: CampaignBuilderPro
           </Radio>
           <div className="flex items-center justify-between gap-3 rounded-lg border border-border px-3 py-2.5">
             <span className="text-sm text-foreground">
-              also reply when someone DMs{" "}
-              {matchMode === "any" ? "anything" : "these words"}
+              responder também quando{" "}
+              {matchMode === "any" ? "qualquer mensagem" : "estas palavras"} chegar por DM
             </span>
             <Toggle
               on={dmTriggerEnabled}
