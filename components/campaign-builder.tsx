@@ -1076,7 +1076,6 @@ export default function CampaignBuilder({ mode, campaignId }: CampaignBuilderPro
 
       {/* Right: preview */}
       <div>
-        <p className="mb-4 text-sm text-muted">Prévia</p>
         <div className="flex min-w-0 flex-col gap-3 lg:sticky lg:top-6">
           <div className="inline-flex self-start rounded-lg border border-border bg-background p-1">
             {(["fluxo", "previa"] as const).map((v) => (

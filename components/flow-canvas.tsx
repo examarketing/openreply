@@ -93,7 +93,10 @@ export default function FlowCanvas({
       steps.map((s, i) => ({
         id: s.key,
         type: "step",
-        position: positions[s.key] ?? { x: 40, y: 24 + i * 132 },
+        // Duas colunas em "S": blocos maiores no espaço disponível.
+        position:
+          positions[s.key] ??
+          (i < 4 ? { x: 24, y: 24 + i * 150 } : { x: 360, y: 24 + (i - 4) * 150 + 75 }),
         data: { ...s, onSelect },
         draggable: true,
       })),
@@ -106,6 +109,7 @@ export default function FlowCanvas({
         id: `${steps[i].key}-${s.key}`,
         source: steps[i].key,
         target: s.key,
+        type: "smoothstep",
         animated: s.ativo && steps[i].ativo,
         style: { stroke: s.ativo ? "#2A78D6" : "#C5CCD6", strokeWidth: 2 },
       })),
@@ -127,7 +131,7 @@ export default function FlowCanvas({
   }, [initialNodes, initialEdges, setNodes, setEdges]);
 
   return (
-    <div className="h-[640px] w-full overflow-hidden rounded-xl border border-border bg-[#F7F8FA]">
+    <div className="h-[560px] w-full overflow-hidden rounded-xl border border-border bg-[#F7F8FA] sm:h-[640px]">
       <ReactFlow<StepNode, Edge>
         nodes={nodes}
         edges={edges}
@@ -138,7 +142,7 @@ export default function FlowCanvas({
           setPositions((p) => ({ ...p, [node.id]: node.position }))
         }
         fitView
-        fitViewOptions={{ padding: 0.2 }}
+        fitViewOptions={{ padding: 0.15, maxZoom: 1 }}
         nodesConnectable={false}
         proOptions={{ hideAttribution: true }}
         minZoom={0.4}
