@@ -1,22 +1,23 @@
 @import "tailwindcss";
 
-/* ManyChat Alternative — Design System
-   Plain and functional. No gradients, glass, glow, or animation. */
+/* EXA · DM automática — visual do Painel EXA (DESIGN.md em 00 - André).
+   Plano e funcional: sem gradiente, sem vidro, sem brilho, sem animação. */
 
 @theme inline {
+  /* EXA — tokens do DESIGN.md (painéis): navy, cinza-azulado, lima só no logo */
   --color-background: #ffffff;
-  --color-foreground: #18181b;
-  --color-surface: #f7f7f8;
-  --color-surface-hover: #efeff1;
-  --color-border: #e4e4e7;
-  --color-border-hover: #d4d4d8;
-  --color-muted: #71717a;
-  --color-accent: #f97316;
-  --color-accent-hover: #ea580c;
-  --color-success: #16a34a;
-  --color-error: #dc2626;
-  --color-warning: #d97706;
-  --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --color-foreground: #101828;
+  --color-surface: #f2f4f7;
+  --color-surface-hover: #e9edf2;
+  --color-border: #d6dae0;
+  --color-border-hover: #c5ccd6;
+  --color-muted: #667085;
+  --color-accent: #101828;
+  --color-accent-hover: #1d2939;
+  --color-success: #12b76a;
+  --color-error: #a12a2a;
+  --color-warning: #f79009;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: ui-monospace, monospace;
 }
 

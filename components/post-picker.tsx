@@ -65,7 +65,7 @@ export default function PostPicker({
     // most recent page.
     params.set("all", "true");
 
-    // Show the cached library instantly (stale-while-revalidate), then refresh.
+    // Mostrar the cached library instantly (stale-while-revalidate), then refresh.
     const cacheKey = `ig-posts:${instagramAccountId ?? "default"}`;
     const cached = readCache<InstagramPost[]>(cacheKey, 15 * 60 * 1000);
     // Hydrating state from cache is a legitimate effect use here.
@@ -114,7 +114,7 @@ export default function PostPicker({
     return (
       <div className="text-center py-8">
         <p className="text-sm text-muted">{error}</p>
-        <p className="text-xs text-zinc-500 mt-1">Connect your Instagram account first</p>
+        <p className="text-xs text-zinc-500 mt-1">Conecte sua conta do Instagram primeiro</p>
       </div>
     );
   }
@@ -122,7 +122,7 @@ export default function PostPicker({
   if (posts.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-sm text-muted">No posts found</p>
+        <p className="text-sm text-muted">Nenhum post encontrado</p>
       </div>
     );
   }
@@ -149,7 +149,7 @@ export default function PostPicker({
             // cleared, which is the case this whole change exists to avoid.
             setShown(PAGE_SIZE);
           }}
-          placeholder="Search your posts by caption…"
+          placeholder="Buscar post pela legenda…"
           className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-zinc-500 focus:border-accent/40 focus:outline-none"
         />
         <span className="shrink-0 text-xs text-muted">{posts.length}</span>
@@ -163,7 +163,7 @@ export default function PostPicker({
           {usedPostIds && Object.keys(usedPostIds).length > 0 && (
             <p className="flex items-center gap-1.5 px-1 text-[11px] text-muted">
               <span className="inline-block h-2.5 w-2.5 rounded-sm border border-warning/50" />
-              Already used
+              Já usado
             </p>
           )}
           {/* auto-rows-min + content-start keep each row at its natural height.
@@ -188,7 +188,7 @@ export default function PostPicker({
               setHoveredId((cur) => (cur === post.id ? null : cur))
             }
             aria-pressed={isSelected}
-            title={isUsed ? `Already used by "${usedByName}"` : undefined}
+            title={isUsed ? `Já usado by "${usedByName}"` : undefined}
             className={`
               relative aspect-square rounded overflow-hidden border-2
               ${
@@ -210,7 +210,7 @@ export default function PostPicker({
               />
             ) : (
               <div className="w-full h-full bg-surface flex items-center justify-center">
-                <span className="text-xs text-muted">No image</span>
+                <span className="text-xs text-muted">Sem imagem</span>
               </div>
             )}
             {showVideo && (
@@ -242,7 +242,7 @@ export default function PostPicker({
               onClick={() => setShown((n) => n + PAGE_SIZE)}
               className="w-full rounded-lg border border-border py-2 text-sm text-muted hover:text-foreground"
             >
-              Show {Math.min(PAGE_SIZE, remaining)} more
+              Mostrar {Math.min(PAGE_SIZE, remaining)} mais
             </button>
           )}
         </>

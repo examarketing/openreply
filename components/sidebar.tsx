@@ -7,18 +7,16 @@
  */
 
 import Link from "next/link";
-import Image from "next/image";
-import { zernioLink } from "@/lib/zernio-links";
 import { usePathname } from "next/navigation";
 
 const navItems = [
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "Overview", href: "/overview" },
-  { label: "Inbox", href: "/inbox" },
-  { label: "Campaigns", href: "/campaigns" },
-  { label: "DM Logs", href: "/logs" },
-  { label: "Settings", href: "/settings" },
-  { label: "Diagnostics", href: "/diagnostics" },
+  { label: "Início", href: "/dashboard" },
+  { label: "Visão geral", href: "/overview" },
+  { label: "Caixa de entrada", href: "/inbox" },
+  { label: "Automações", href: "/campaigns" },
+  { label: "Registro de DMs", href: "/logs" },
+  { label: "Configurações", href: "/settings" },
+  { label: "Diagnóstico", href: "/diagnostics" },
 ];
 
 interface SidebarProps {
@@ -58,8 +56,9 @@ export default function Sidebar({
           className="px-6 py-5 border-b border-border"
           style={{ paddingTop: "calc(1.25rem + env(safe-area-inset-top))" }}
         >
-          <Link href="/dashboard" className="text-base font-semibold">
-            OpenReply
+          <Link href="/dashboard" className="flex items-center gap-2 text-base font-semibold tracking-tight">
+            <span className="inline-block h-3 w-3 rounded-sm bg-[#B0F800]" aria-hidden="true" />
+            <span>EXA <span className="text-muted font-normal">· DM automática</span></span>
           </Link>
         </div>
 
@@ -90,22 +89,7 @@ export default function Sidebar({
 
         <div className="px-5 py-4 border-t border-border">
           <p className="text-sm text-foreground truncate">{workspaceName}</p>
-          <p className="text-xs text-muted">Self-hosted</p>
-          <a
-            href={zernioLink({ placement: "sidebar" })}
-            target="_blank"
-            rel="sponsored noopener noreferrer"
-            className="mt-4 flex items-center gap-3 text-xs text-muted hover:text-foreground"
-          >
-            <span>Supported by</span>
-            <Image
-              src="/brand/zernio-primary.svg"
-              alt="Zernio"
-              width={64}
-              height={20}
-              className="m-2"
-            />
-          </a>
+          <p className="text-xs text-muted">Stack própria da EXA · dm.exa.marketing</p>
         </div>
       </aside>
     </>

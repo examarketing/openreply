@@ -223,7 +223,7 @@ function PostScreen({
             {caption || "Applications close rly soon!!"}
           </span>
         </p>
-        <p className="mt-1 text-zinc-500">View all comments</p>
+        <p className="mt-1 text-zinc-500">Ver todos os comentários</p>
       </div>
       <div className="flex shrink-0 items-center justify-around border-t border-zinc-800 px-2 py-3 text-white">
         {Ico.home("h-6 w-6")}
@@ -256,17 +256,17 @@ function CommentsScreen({
       <div className="h-20 bg-zinc-800/70" />
       <div className="flex flex-1 flex-col rounded-t-2xl bg-[#0b0b0b] px-4 pt-3">
         <div className="mx-auto mb-3 h-1 w-9 rounded-full bg-zinc-600" />
-        <p className="text-center text-sm font-semibold">Comments</p>
+        <p className="text-center text-sm font-semibold">Comentários</p>
 
         <div className="mt-5 flex gap-3">
           <Avatar url={null} size={32} />
           <div className="flex-1">
             <p className="text-xs">
               <span className="font-semibold">{SAMPLE_USER}</span>{" "}
-              <span className="text-zinc-500">Now</span>
+              <span className="text-zinc-500">Agora</span>
             </p>
             <p className="text-sm">{sampleComment || "yc"}</p>
-            <p className="mt-0.5 text-xs text-zinc-500">Reply</p>
+            <p className="mt-0.5 text-xs text-zinc-500">Responder</p>
           </div>
           <span className="mt-1">{Ico.heart("h-3.5 w-3.5 text-zinc-500")}</span>
         </div>
@@ -277,10 +277,10 @@ function CommentsScreen({
             <div className="flex-1">
               <p className="text-xs">
                 <span className="font-semibold">{username}</span>{" "}
-                <span className="text-zinc-500">Now</span>
+                <span className="text-zinc-500">Agora</span>
               </p>
               <p className="text-sm">{publicReplyMessage || "Sent you a DM! 📩"}</p>
-              <p className="mt-0.5 text-xs text-zinc-500">Reply</p>
+              <p className="mt-0.5 text-xs text-zinc-500">Responder</p>
             </div>
             <span className="mt-1">{Ico.heart("h-3.5 w-3.5 text-zinc-500")}</span>
           </div>
@@ -465,7 +465,7 @@ function DmScreen({
         <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent text-white">
           {Ico.camera("h-4 w-4")}
         </span>
-        <div className="flex-1 rounded-full bg-zinc-800 px-3 py-2 text-xs text-zinc-500">Message…</div>
+        <div className="flex-1 rounded-full bg-zinc-800 px-3 py-2 text-xs text-zinc-500">Mensagem…</div>
       </div>
     </div>
   );
@@ -480,7 +480,7 @@ export default function CampaignPreview(props: CampaignPreviewProps) {
     { key: "comments", label: "Comments" },
     { key: "dm", label: "DM" },
     ...(props.dmTriggerEnabled
-      ? [{ key: "dmTrigger" as const, label: "DM trigger" }]
+      ? [{ key: "dmTrigger" as const, label: "Gatilho por DM" }]
       : []),
   ];
 
