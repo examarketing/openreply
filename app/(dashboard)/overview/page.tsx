@@ -27,10 +27,10 @@ function formatDate(iso: string): string {
 }
 
 const COUNT_OPTIONS = [
-  { value: "25", label: "Last 25" },
-  { value: "50", label: "Last 50" },
-  { value: "100", label: "Last 100" },
-  { value: "all", label: "All time" },
+  { value: "25", label: "Últimos 25" },
+  { value: "50", label: "Últimos 50" },
+  { value: "100", label: "Últimos 100" },
+  { value: "all", label: "Todo o período" },
 ];
 
 export default function OverviewPage() {
@@ -93,7 +93,7 @@ export default function OverviewPage() {
             href="/api/instagram/connect"
             className="mt-4 inline-block text-sm text-accent hover:underline"
           >
-            Connect Instagram
+            Conectar Instagram
           </a>
         )}
       </div>
@@ -110,9 +110,9 @@ export default function OverviewPage() {
       {data.limitations?.map(note => <p key={note} className="text-sm text-muted">{note}</p>)}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
-          <h1 className="text-lg font-semibold text-foreground">Overview</h1>
+          <h1 className="text-lg font-semibold text-foreground">Visão geral</h1>
           <p className="text-sm text-muted mt-1">
-            {data.provider !== "ZERNIO" && data.requestedCount === "all" ? "All-time" : "Recent"} —{" "}
+            {data.provider !== "ZERNIO" && data.requestedCount === "all" ? "Histórico" : "Recentes"} —{" "}
             {totals.posts} post{totals.posts === 1 ? "" : "s"} from @
             {data.account.username}
             {data.truncated ? ` (capped at ${totals.posts})` : ""}
@@ -128,7 +128,7 @@ export default function OverviewPage() {
         <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
           <label className="flex flex-col gap-2 text-sm">
             <span className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
-              Range
+              Período
             </span>
             <select
               value={count}
@@ -159,17 +159,17 @@ export default function OverviewPage() {
       {!insightsAvailable && (
         <div className="panel rounded p-4 border border-border">
           <p className="text-sm text-foreground">
-            Views, reach, saved and shares need the insights permission.
+            Visualizações, alcance, salvos e compartilhamentos precisam da permissão de insights.
           </p>
           <p className="text-sm text-muted mt-1">
-            Reconnect your account to grant it — likes and comments are shown in
-            the meantime.
+            Reconecte a conta para liberar — enquanto isso mostramos curtidas e
+            comentários.
           </p>
           <a
             href="/api/instagram/connect"
             className="mt-3 inline-block text-sm text-accent hover:underline"
           >
-            Reconnect Instagram
+            Reconectar Instagram
           </a>
         </div>
       )}
@@ -191,7 +191,7 @@ export default function OverviewPage() {
       <div className="panel rounded p-4 sm:p-6">
         <h2 className="text-sm font-semibold text-foreground mb-4">Posts</h2>
         {posts.length === 0 ? (
-          <p className="text-sm text-muted py-8 text-center">No posts found</p>
+          <p className="text-sm text-muted py-8 text-center">Nenhum post encontrado</p>
         ) : (
           // Eight metric columns can't compress into a phone; let the table keep
           // its natural width and scroll inside the panel instead.
@@ -200,13 +200,13 @@ export default function OverviewPage() {
               <thead>
                 <tr className="text-left text-xs uppercase tracking-wide text-zinc-500 border-b border-border">
                   <th className="py-2 pr-4 font-medium">Post</th>
-                  <th className="py-2 px-3 font-medium text-right">Views</th>
-                  <th className="py-2 px-3 font-medium text-right">Reach</th>
-                  <th className="py-2 px-3 font-medium text-right">Likes</th>
-                  <th className="py-2 px-3 font-medium text-right">Comments</th>
-                  <th className="py-2 px-3 font-medium text-right">Saved</th>
-                  <th className="py-2 px-3 font-medium text-right">Shares</th>
-                  <th className="py-2 pl-3 font-medium text-right">Date</th>
+                  <th className="py-2 px-3 font-medium text-right">Visualizações</th>
+                  <th className="py-2 px-3 font-medium text-right">Alcance</th>
+                  <th className="py-2 px-3 font-medium text-right">Curtidas</th>
+                  <th className="py-2 px-3 font-medium text-right">Comentários</th>
+                  <th className="py-2 px-3 font-medium text-right">Salvos</th>
+                  <th className="py-2 px-3 font-medium text-right">Compart.</th>
+                  <th className="py-2 pl-3 font-medium text-right">Data</th>
                 </tr>
               </thead>
               <tbody>

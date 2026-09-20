@@ -23,6 +23,10 @@ export async function GET(request: NextRequest) {
   const weekStart = new Date(todayStart);
   weekStart.setDate(weekStart.getDate() - 7);
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const requestedDays = Number(request.nextUrl.searchParams.get("days") ?? 7);
+  const periodDays = [7, 30, 90].includes(requestedDays) ? requestedDays : 7;
+  const periodStart = new Date(todayStart);
+  periodStart.setDate(periodStart.getDate() - (periodDays - 1));
   const requestedInstagramAccountId =
     request.nextUrl.searchParams.get("instagramAccountId");
   const selectedAccountId =
@@ -151,6 +155,90 @@ export async function GET(request: NextRequest) {
     }),
   ]);
 
+  // ── Período selecionado (7/30/90 dias): série diária, funil, status e por automação
+  const [periodLogs, periodClicks, automationNames] = await Promise.all([
+    prisma.dmLog.findMany({
+      where: { workspaceId, createdAt: { gte: periodStart }, ...accountFilter },
+      select: { createdAt: true, status: true, automationId: true, commenterId: true },
+    }),
+    prisma.linkClick.findMany({
+      where: { workspaceId, createdAt: { gte: periodStart }, ...accountFilter },
+      select: { createdAt: true, automationId: true },
+    }),
+    prisma.automation.findMany({
+      where: { workspaceId, ...accountFilter },
+      select: { id: true, name: true, isActive: true, instagramAccount: { select: { username: true } } },
+    }),
+  ]);
+
+  const dayKey = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+  const seriesMap = new Map<string, { date: string; comentarios: number; enviadas: number; cliques: number }>();
+  for (let i = periodDays - 1; i >= 0; i--) {
+    const d = new Date(todayStart);
+    d.setDate(d.getDate() - i);
+    seriesMap.set(dayKey(d), {
+      date: `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`,
+      comentarios: 0,
+      enviadas: 0,
+      cliques: 0,
+    });
+  }
+  const statusBreakdown: Record<string, number> = {};
+  const perAutomationMap = new Map<string, { comentarios: number; enviadas: number; cliques: number; pessoas: Set<string> }>();
+  const uniquePeople = new Set<string>();
+  for (const log of periodLogs) {
+    const bucket = seriesMap.get(dayKey(new Date(log.createdAt)));
+    if (bucket) {
+      bucket.comentarios += 1;
+      if (log.status === "SENT") bucket.enviadas += 1;
+    }
+    statusBreakdown[log.status] = (statusBreakdown[log.status] ?? 0) + 1;
+    uniquePeople.add(log.commenterId);
+    const pa = perAutomationMap.get(log.automationId) ?? { comentarios: 0, enviadas: 0, cliques: 0, pessoas: new Set<string>() };
+    pa.comentarios += 1;
+    if (log.status === "SENT") pa.enviadas += 1;
+    pa.pessoas.add(log.commenterId);
+    perAutomationMap.set(log.automationId, pa);
+  }
+  for (const click of periodClicks) {
+    const bucket = seriesMap.get(dayKey(new Date(click.createdAt)));
+    if (bucket) bucket.cliques += 1;
+    const pa = perAutomationMap.get(click.automationId) ?? { comentarios: 0, enviadas: 0, cliques: 0, pessoas: new Set<string>() };
+    pa.cliques += 1;
+    perAutomationMap.set(click.automationId, pa);
+  }
+  const periodSent = periodLogs.filter((l) => l.status === "SENT").length;
+  const periodMatched = periodLogs.filter((l) => l.status !== "SKIPPED_NO_MATCH").length;
+  const period = {
+    days: periodDays,
+    series: Array.from(seriesMap.values()),
+    funnel: {
+      comentarios: periodLogs.length,
+      comPalavra: periodMatched,
+      enviadas: periodSent,
+      cliques: periodClicks.length,
+      pessoas: uniquePeople.size,
+    },
+    ctr: calculateCtr(periodClicks.length, periodSent),
+    statusBreakdown,
+    perAutomation: automationNames
+      .map((a) => {
+        const pa = perAutomationMap.get(a.id);
+        return {
+          id: a.id,
+          name: a.name,
+          isActive: a.isActive,
+          username: a.instagramAccount?.username ?? "",
+          comentarios: pa?.comentarios ?? 0,
+          enviadas: pa?.enviadas ?? 0,
+          cliques: pa?.cliques ?? 0,
+          pessoas: pa?.pessoas.size ?? 0,
+          ctr: calculateCtr(pa?.cliques ?? 0, pa?.enviadas ?? 0),
+        };
+      })
+      .sort((x, y) => y.enviadas - x.enviadas || y.comentarios - x.comentarios),
+  };
+
   const dailyDMs: { date: string; count: number }[] = [];
   for (let i = 6; i >= 0; i--) {
     const dayStart = new Date(todayStart);
@@ -168,7 +256,7 @@ export async function GET(request: NextRequest) {
     });
 
     dailyDMs.push({
-      date: dayStart.toLocaleDateString("en-US", { weekday: "short" }),
+      date: dayStart.toLocaleDateString("pt-BR", { weekday: "short" }),
       count,
     });
   }
@@ -214,6 +302,7 @@ export async function GET(request: NextRequest) {
       topKeywords,
       dailyDMs,
       recentLogs,
+      period,
     },
   });
 }

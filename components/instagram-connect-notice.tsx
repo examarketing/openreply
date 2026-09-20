@@ -13,25 +13,25 @@ const TONE_CLASSES: Record<Tone, string> = {
 const MESSAGES: Record<string, { tone: Tone; title: string; detail: string }> = {
   denied: {
     tone: "warning",
-    title: "Instagram connection cancelled",
+    title: "Conexão com o Instagram cancelada",
     detail:
       "You declined the permission prompt on Instagram. Start again and accept all requested permissions.",
   },
   invalid: {
     tone: "error",
-    title: "Instagram connection expired",
+    title: "A conexão com o Instagram expirou",
     detail:
       "The login link was missing or older than 10 minutes. Click Connect Instagram to start a fresh attempt.",
   },
   forbidden: {
     tone: "error",
-    title: "Not permitted",
+    title: "Sem permissão",
     detail:
       "Only workspace owners and admins can connect an Instagram account.",
   },
   already_connected: {
     tone: "warning",
-    title: "Account already connected",
+    title: "Conta já conectada",
     detail:
       "That Instagram account is connected to another workspace. Disconnect it there first, or connect a different account.",
   },
@@ -49,7 +49,7 @@ export function InstagramConnectNotice() {
       .filter(Boolean);
 
     return (
-      <Notice tone="error" title="Instagram app not configured">
+      <Notice tone="error" title="App do Instagram não configurado">
         <p>
           Set{" "}
           {missing.length > 0
@@ -80,10 +80,10 @@ export function InstagramConnectNotice() {
     const reason = searchParams.get("reason");
 
     return (
-      <Notice tone="error" title="Instagram connection failed">
+      <Notice tone="error" title="A conexão com o Instagram falhou">
         <p>
-          Instagram accepted the login but the connection could not be
-          completed. This is usually a mismatched redirect URI or an app that is
+          O Instagram aceitou o login, mas a conexão não foi concluída. Em geral
+          é a URL de retorno errada no app da Meta ou um app que is
           missing the required permissions.
         </p>
         {reason && (

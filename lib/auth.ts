@@ -8,7 +8,7 @@ import { isEmailAllowedToSignIn } from "@/lib/env";
 
 type AdapterPrismaClient = Parameters<typeof PrismaAdapter>[0];
 
-const emailFrom = process.env.EMAIL_FROM ?? "OpenReply <login@example.com>";
+const emailFrom = process.env.EMAIL_FROM ?? "EXA DM automática <login@example.com>";
 // Setting EMAIL_SERVER switches magic links to your own SMTP server, for
 // self-hosters who do not want a third-party mail service. Resend stays the
 // default, so an existing deployment is unaffected.
@@ -28,6 +28,35 @@ export const authConfig = {
       : Resend({
           apiKey: process.env.RESEND_API_KEY ?? "missing-resend-api-key",
           from: emailFrom,
+          // E-mail de acesso em português, com a cara da EXA.
+          async sendVerificationRequest({ identifier, url, provider }) {
+            const host = new URL(url).host;
+            const html = `<!doctype html><html lang="pt-BR"><body style="margin:0;background:#F2F4F7;font-family:Inter,-apple-system,Segoe UI,Roboto,sans-serif;color:#101828">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="padding:32px 16px"><tr><td align="center">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:480px;background:#ffffff;border:1px solid #D6DAE0;border-radius:12px">
+<tr><td style="padding:28px 28px 8px"><span style="display:inline-block;width:12px;height:12px;background:#B0F800;border-radius:3px;vertical-align:middle;margin-right:8px"></span><strong style="font-size:16px;vertical-align:middle">EXA · DM automática</strong></td></tr>
+<tr><td style="padding:8px 28px 0;font-size:15px;line-height:1.55">Seu link de acesso ao painel de automações do Instagram (<strong>${host}</strong>). Ele vale por 24 horas e só funciona uma vez.</td></tr>
+<tr><td style="padding:24px 28px"><a href="${url}" style="display:inline-block;background:#101828;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;padding:14px 24px;border-radius:10px">Entrar no painel</a></td></tr>
+<tr><td style="padding:0 28px 28px;font-size:13px;line-height:1.5;color:#667085">Se você não pediu este acesso, pode ignorar este e-mail. Se o botão não abrir, copie este endereço no navegador:<br><span style="word-break:break-all">${url}</span></td></tr>
+</table></td></tr></table></body></html>`;
+            const res = await fetch("https://api.resend.com/emails", {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${provider.apiKey}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                from: provider.from,
+                to: identifier,
+                subject: `Seu acesso ao painel EXA · DM automática`,
+                html,
+                text: `Seu link de acesso ao painel EXA · DM automática (${host}): ${url}\n\nVale por 24 horas e funciona uma vez. Se você não pediu, ignore este e-mail.`,
+              }),
+            });
+            if (!res.ok) {
+              throw new Error(`Resend error: ${res.status} ${await res.text()}`);
+            }
+          },
         }),
   ],
   callbacks: {

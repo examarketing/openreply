@@ -105,7 +105,7 @@ function renderMessage(text: string, hasLink: boolean, linkUrl?: string) {
         }
       >
         {/* Show the actual link being sent, not a placeholder token. */}
-        {linkUrl || (hasLink ? "your link" : "{link}")}
+        {linkUrl || (hasLink ? "seu link" : "{link}")}
       </span>
     ) : (
       <span key={i}>{part}</span>
@@ -390,7 +390,7 @@ function DmScreen({
               <div className="max-w-[80%] overflow-hidden rounded-2xl rounded-bl-md bg-zinc-800">
                 <p className="whitespace-pre-wrap px-3 py-2 text-sm">
                   {followPromptMessage ||
-                    "quick favor before i send your link. i don't make any money from this, it's free. if you want to support me, just don't unfollow after, and star the repo on github if it helps you. tap the button once you're following and i'll send it over"}
+                    "quick favor before i send seu link. i don't make any money from this, it's free. if you want to support me, just don't unfollow after, and star the repo on github if it helps you. tap the button once you're following and i'll send it over"}
                 </p>
                 <div className="mx-1.5 mb-1.5 rounded-xl bg-zinc-700 px-4 py-1.5 text-center text-sm font-medium text-white">
                   {followPromptButtonLabel || "i'm following"}
@@ -477,7 +477,7 @@ export default function CampaignPreview(props: CampaignPreviewProps) {
   const { tab, onTabChange } = props;
   const tabs: { key: PreviewTab; label: string }[] = [
     { key: "post", label: "Post" },
-    { key: "comments", label: "Comments" },
+    { key: "comments", label: "Comentários" },
     { key: "dm", label: "DM" },
     ...(props.dmTriggerEnabled
       ? [{ key: "dmTrigger" as const, label: "Gatilho por DM" }]

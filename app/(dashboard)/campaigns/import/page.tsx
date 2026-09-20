@@ -85,7 +85,7 @@ export default function ImportCampaignsPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-lg font-semibold">Import campaigns</h1>
+        <h1 className="text-lg font-semibold">Importar automações</h1>
         <p className="text-sm text-muted mt-1">
           Paste a CSV with one row per campaign. Each row opens in the builder
           prefilled and editable, so you can review it and pick the reel before
@@ -98,8 +98,8 @@ export default function ImportCampaignsPage() {
           <code className="text-accent">opening_dm</code>,{" "}
           <code className="text-accent">opening_dm_button</code>. Keywords go in
           one cell, separated by commas. Use{" "}
-          <code className="text-accent">{"{link}"}</code> in the message to
-          insert the tracked link.
+          <code className="text-accent">{"{link}"}</code> na mensagem para
+          inserir o link rastreado.
         </p>
       </div>
 
@@ -112,14 +112,14 @@ export default function ImportCampaignsPage() {
       {accounts.length > 1 && (
         <div className="space-y-2">
           <label className="block text-sm font-medium text-foreground">
-            Instagram account
+            Conta do Instagram
           </label>
           <AccountSelect
             accounts={accounts}
             value={selectedAccountId}
             onChange={setSelectedAccountId}
             includeAll={false}
-            label="Account"
+            label="Conta"
           />
         </div>
       )}
@@ -138,7 +138,7 @@ export default function ImportCampaignsPage() {
           onClick={() => setCsv(SAMPLE)}
           className="text-xs text-muted hover:text-foreground"
         >
-          Fill with a sample
+          Preencher com exemplo
         </button>
       </div>
 
@@ -147,13 +147,13 @@ export default function ImportCampaignsPage() {
           onClick={startImport}
           className="px-5 py-2 rounded bg-accent text-sm font-medium text-white hover:bg-accent-hover"
         >
-          Review and import
+          Revisar e importar
         </button>
         <button
           onClick={() => router.push("/campaigns")}
           className="px-5 py-2 rounded text-sm text-muted hover:text-foreground border border-border"
         >
-          Cancel
+          Cancelar
         </button>
       </div>
     </div>
