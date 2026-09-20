@@ -11,9 +11,9 @@ import { usePathname } from "next/navigation";
 const pageTitles: Record<string, string> = {
   "/dashboard": "Início",
   "/campaigns": "Automações",
-  "/campaigns/new": "New Campaign",
+  "/campaigns/new": "Nova automação",
   "/automations": "Automações",
-  "/automations/new": "New Campaign",
+  "/automations/new": "Nova automação",
   "/logs": "Registro de DMs",
   "/settings": "Configurações",
   "/diagnostics": "Diagnóstico",
