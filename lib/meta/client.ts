@@ -840,3 +840,40 @@ export async function debugToken(inputToken: string, accessToken: string) {
   const response = await fetch(url.toString());
   return handleResponse(response);
 }
+
+/**
+ * Perfil público de quem conversa com a conta (Instagram-scoped ID vindo das
+ * conversas/webhooks). Só funciona para pessoas que já mandaram mensagem. A
+ * URL da foto expira em algumas horas; buscar sob demanda e cachear pouco.
+ */
+export interface InstagramUserProfile {
+  id: string;
+  username?: string;
+  name?: string;
+  profile_pic?: string;
+  follower_count?: number;
+  is_user_follow_business?: boolean;
+  is_business_follow_user?: boolean;
+}
+
+export async function getUserProfile(
+  accessToken: string,
+  igsid: string
+): Promise<InstagramUserProfile | null> {
+  const url = new URL(`${instagramGraphBase()}/${encodeURIComponent(igsid)}`);
+  url.searchParams.set(
+    "fields",
+    "name,username,profile_pic,follower_count,is_user_follow_business,is_business_follow_user"
+  );
+  try {
+    return await handleResponse<InstagramUserProfile>(
+      await fetch(url.toString(), {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        signal: AbortSignal.timeout(8_000),
+      })
+    );
+  } catch {
+    // Perfil indisponível (privacidade, id de outro espaço ou janela fechada).
+    return null;
+  }
+}

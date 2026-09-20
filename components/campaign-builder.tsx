@@ -16,6 +16,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import AccountSelect, { type AccountOption } from "@/components/account-select";
 import PostPicker from "@/components/post-picker";
+import FlowCanvas, { type FlowStep, type FlowStepKey } from "@/components/flow-canvas";
 import CampaignPreview, { type PreviewTab } from "@/components/campaign-preview";
 import { readCache, writeCache } from "@/lib/client-cache";
 import {
@@ -64,12 +65,14 @@ interface CampaignBuilderProps {
 function Section({
   title,
   children,
+  id,
 }: {
   title: string;
   children: React.ReactNode;
+  id?: string;
 }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 scroll-mt-24" id={id}>
       <h2 className="text-sm font-semibold text-foreground">{title}</h2>
       {children}
     </div>
@@ -181,6 +184,7 @@ export default function CampaignBuilder({ mode, campaignId }: CampaignBuilderPro
   const [followUpMessage, setFollowUpMessage] = useState("");
   const [followUpDelayMinutes, setFollowUpDelayMinutes] = useState(0);
 
+  const [visao, setVisao] = useState<"previa" | "fluxo">("fluxo");
   const [previewTab, setPreviewTab] = useState<PreviewTab>("dm");
 
   // CSV import queue. When present, each save advances to the next row instead
@@ -549,6 +553,97 @@ export default function CampaignBuilder({ mode, campaignId }: CampaignBuilderPro
       </div>
     );
   }
+  const ICON = {
+    gatilho: "M4 5h16v11H8l-4 4V5Z",
+    palavra: "M4 7h16M4 12h10M4 17h7",
+    resposta: "M9 17H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v6a4 4 0 0 1-4 4h-3l-5 4v-4Z",
+    abertura: "M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z",
+    seguir: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm10 0v6m3-3h-6",
+    dm: "M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1",
+    followup: "M12 8v4l3 3M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z",
+  };
+  const trimStr = (t: string, n = 90) => (t.length > n ? t.slice(0, n) + "…" : t);
+  const flowSteps: FlowStep[] = [
+    {
+      key: "gatilho",
+      titulo: "Gatilho: comentário",
+      ativo: true,
+      cor: "#101828",
+      icone: ICON.gatilho,
+      resumo:
+        triggerScope === "any"
+          ? "Qualquer post ou reel da conta"
+          : triggerScope === "next"
+            ? "O próximo post ou reel publicado"
+            : postCaption
+              ? `Post: “${trimStr(postCaption, 70)}”`
+              : "Escolha o post ou reel",
+    },
+    {
+      key: "palavra",
+      titulo: "Condição: palavra-chave",
+      ativo: true,
+      cor: "#2A78D6",
+      icone: ICON.palavra,
+      resumo:
+        matchMode === "any"
+          ? "Qualquer comentário dispara" + (dmTriggerEnabled ? " · também por DM" : "")
+          : keywords.length
+            ? `Contém: ${keywords.join(", ")}` + (dmTriggerEnabled ? " · também por DM" : "")
+            : "Nenhuma palavra ainda",
+    },
+    {
+      key: "resposta",
+      titulo: "Resposta pública no comentário",
+      ativo: publicReplyEnabled,
+      cor: "#12B76A",
+      icone: ICON.resposta,
+      resumo: publicReplyEnabled
+        ? trimStr(publicReplyMessages.filter((m) => m.trim()).join(" / ") || "Escreva a resposta")
+        : "Sem resposta pública",
+    },
+    {
+      key: "abertura",
+      titulo: "DM de abertura + botão",
+      ativo: openingDmEnabled,
+      cor: "#7A5AF8",
+      icone: ICON.abertura,
+      resumo: openingDmEnabled
+        ? `${trimStr(openingDmMessage || "Escreva a mensagem", 70)} [${openingDmButtonLabel || "botão"}]`
+        : "Vai direto para a DM com o link",
+    },
+    {
+      key: "seguir",
+      titulo: "Pedir para seguir",
+      ativo: requireFollow,
+      cor: "#EB6834",
+      icone: ICON.seguir,
+      resumo: requireFollow
+        ? trimStr(followPromptMessage || "Pede para seguir antes de liberar o link", 90)
+        : "Não exige seguir",
+    },
+    {
+      key: "dm",
+      titulo: "DM com o link",
+      ativo: true,
+      cor: "#0B6B3A",
+      icone: ICON.dm,
+      resumo:
+        (dmMessage ? trimStr(dmMessage, 80) : "Escreva a DM") +
+        (trackedDestinationUrl.trim() ? ` → ${trackedDestinationUrl.trim().replace(/^https?:\/\//, "").slice(0, 40)}` : ""),
+    },
+    {
+      key: "followup",
+      titulo: "Mensagem de acompanhamento",
+      ativo: followUpEnabled,
+      cor: "#667085",
+      icone: ICON.followup,
+      resumo: followUpEnabled
+        ? `${followUpDelayMinutes} min depois: ${trimStr(followUpMessage || "Escreva a mensagem", 70)}`
+        : "Sem acompanhamento",
+    },
+  ];
+
 
   return (
     <div className="space-y-6">
@@ -665,7 +760,7 @@ export default function CampaignBuilder({ mode, campaignId }: CampaignBuilderPro
           )}
         </div>
 
-        <Section title="Quando alguém comentar em">
+        <Section id="secao-gatilho" title="Quando alguém comentar em">
           <Radio
             checked={triggerScope === "specific"}
             onSelect={() => setTriggerScope("specific")}
@@ -696,7 +791,7 @@ export default function CampaignBuilder({ mode, campaignId }: CampaignBuilderPro
           </Radio>
         </Section>
 
-        <Section title="E o comentário tiver">
+        <Section id="secao-palavra" title="E o comentário tiver">
           <Radio
             checked={matchMode === "specific"}
             onSelect={() => setMatchMode("specific")}
@@ -796,7 +891,7 @@ export default function CampaignBuilder({ mode, campaignId }: CampaignBuilderPro
           )}
         </Section>
 
-        <Section title="A pessoa recebe">
+        <Section id="secao-recebe" title="A pessoa recebe">
           <div className="rounded-lg border border-border p-3">
             <div className="flex items-center justify-between">
               <span className="text-sm text-foreground">uma DM de abertura</span>
@@ -862,7 +957,7 @@ export default function CampaignBuilder({ mode, campaignId }: CampaignBuilderPro
           </div>
         </Section>
 
-        <Section title="E depois, recebe">
+        <Section id="secao-depois" title="E depois, recebe">
           <div className="rounded-lg border border-border p-3 space-y-2">
             <span className="text-sm text-foreground">a DM com o link</span>
             <textarea
@@ -982,7 +1077,39 @@ export default function CampaignBuilder({ mode, campaignId }: CampaignBuilderPro
       {/* Right: preview */}
       <div>
         <p className="mb-4 text-sm text-muted">Prévia</p>
-        <div className="flex min-w-0 justify-center lg:sticky lg:top-6 lg:block">
+        <div className="flex min-w-0 flex-col gap-3 lg:sticky lg:top-6">
+          <div className="inline-flex self-start rounded-lg border border-border bg-background p-1">
+            {(["fluxo", "previa"] as const).map((v) => (
+              <button
+                key={v}
+                type="button"
+                onClick={() => setVisao(v)}
+                className={`rounded-md px-3 py-1.5 text-sm ${
+                  visao === v ? "bg-accent text-white font-medium" : "text-muted hover:text-foreground"
+                }`}
+              >
+                {v === "fluxo" ? "Fluxo em blocos" : "Prévia no celular"}
+              </button>
+            ))}
+          </div>
+          {visao === "fluxo" && (
+            <FlowCanvas
+              steps={flowSteps}
+              onSelect={(key: FlowStepKey) => {
+                const alvo: Record<FlowStepKey, string> = {
+                  gatilho: "secao-gatilho",
+                  palavra: "secao-palavra",
+                  resposta: "secao-palavra",
+                  abertura: "secao-recebe",
+                  seguir: "secao-recebe",
+                  dm: "secao-depois",
+                  followup: "secao-depois",
+                };
+                document.getElementById(alvo[key])?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
+            />
+          )}
+          {visao === "previa" && (
           <CampaignPreview
             tab={previewTab}
             onTabChange={setPreviewTab}
@@ -1012,6 +1139,7 @@ export default function CampaignBuilder({ mode, campaignId }: CampaignBuilderPro
             followUpMessage={followUpMessage}
             followUpDelayMinutes={followUpDelayMinutes}
           />
+          )}
         </div>
       </div>
       </div>

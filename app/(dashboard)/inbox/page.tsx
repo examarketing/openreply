@@ -35,6 +35,37 @@ function formatTime(iso: string | null): string {
     : d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
+function Avatar({
+  src,
+  label,
+  size = 36,
+}: {
+  src?: string | null;
+  label: string;
+  size?: number;
+}) {
+  const ini = label.replace(/^@/, "").slice(0, 2).toUpperCase() || "?";
+  return src ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt={label}
+      width={size}
+      height={size}
+      referrerPolicy="no-referrer"
+      className="shrink-0 rounded-full object-cover bg-surface"
+      style={{ width: size, height: size }}
+    />
+  ) : (
+    <span
+      className="flex shrink-0 items-center justify-center rounded-full bg-surface text-xs font-semibold text-foreground"
+      style={{ width: size, height: size }}
+    >
+      {ini}
+    </span>
+  );
+}
+
 export default function InboxPage() {
   const [accounts, setAccounts] = useState<AccountOption[]>([]);
   // Seed from the last-used account so a revisit can paint the cached
@@ -45,6 +76,10 @@ export default function InboxPage() {
   });
 
   const [conversations, setConversations] = useState<ConversationListItem[]>([]);
+  // Foto/nome de quem conversa, buscados na Meta (cache no servidor).
+  const [profiles, setProfiles] = useState<
+    Record<string, { username?: string; name?: string; profile_pic?: string } | null>
+  >({});
   const [convLoading, setConvLoading] = useState(true);
   const [convError, setConvError] = useState<string | null>(null);
 
@@ -64,6 +99,22 @@ export default function InboxPage() {
   // Accounts for the selector; default to the first connected account. Uses the
   // lightweight accounts endpoint (one query) rather than the heavy dashboard
   // stats aggregation, so the inbox isn't gated on analytics before it can load.
+  useEffect(() => {
+    const missing = conversations
+      .map((c) => c.contact.id)
+      .filter((id) => id && !(id in profiles));
+    if (missing.length === 0) return;
+    const params = new URLSearchParams({ ids: missing.slice(0, 30).join(",") });
+    if (selectedAccountId && selectedAccountId !== "all") params.set("instagramAccountId", selectedAccountId);
+    fetch(`/api/instagram/profiles?${params}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) setProfiles((prev) => ({ ...prev, ...data.data }));
+      })
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversations]);
+
   useEffect(() => {
     fetch("/api/instagram/accounts")
       .then((r) => r.json())
@@ -303,23 +354,37 @@ export default function InboxPage() {
                       isActive ? "bg-surface-hover" : "hover:bg-surface-hover"
                     }`}
                   >
-                    <div className="flex items-baseline justify-between gap-2">
-                      <span className="truncate text-sm font-medium text-foreground">
-                        {c.detailsUnavailable ? "Details unavailable" : `@${c.contact.username ?? "unknown"}`}
-                      </span>
-                      <span className="shrink-0 text-[11px] text-zinc-500">
-                        {formatTime(c.updatedTime)}
-                      </span>
+                    <div className="flex items-center gap-3">
+                      <Avatar
+                        src={profiles[c.contact.id]?.profile_pic}
+                        label={c.contact.username ?? profiles[c.contact.id]?.username ?? "?"}
+                        size={40}
+                      />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-baseline justify-between gap-2">
+                          <span className="truncate text-sm font-medium text-foreground">
+                            {c.detailsUnavailable
+                              ? "Conversa indisponível"
+                              : profiles[c.contact.id]?.name || `@${c.contact.username ?? profiles[c.contact.id]?.username ?? "desconhecido"}`}
+                          </span>
+                          <span className="shrink-0 text-[11px] text-zinc-500">
+                            {formatTime(c.updatedTime)}
+                          </span>
+                        </div>
+                        {!c.detailsUnavailable && profiles[c.contact.id]?.name && (
+                          <p className="truncate text-xs text-muted">@{c.contact.username ?? profiles[c.contact.id]?.username}</p>
+                        )}
+                        {c.detailsUnavailable && (
+                          <p className="mt-0.5 text-xs text-muted">O Instagram não conseguiu carregar esta conversa.</p>
+                        )}
+                        {c.lastMessage && (
+                          <p className="mt-0.5 truncate text-xs text-muted">
+                            {c.lastMessage.fromMe ? "Você: " : ""}
+                            {c.lastMessage.text || "(sem texto)"}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                    {c.detailsUnavailable && (
-                      <p className="mt-0.5 text-xs text-muted">O Instagram não conseguiu carregar esta conversa.</p>
-                    )}
-                    {c.lastMessage && (
-                      <p className="mt-0.5 truncate text-xs text-muted">
-                        {c.lastMessage.fromMe ? "You: " : ""}
-                        {c.lastMessage.text || "(no text)"}
-                      </p>
-                    )}
                   </button>
                 );
               })
@@ -347,9 +412,26 @@ export default function InboxPage() {
                 >
                   Voltar
                 </button>
+                <Avatar
+                  src={profiles[active.contact.id]?.profile_pic}
+                  label={active.contact.username ?? profiles[active.contact.id]?.username ?? "?"}
+                  size={32}
+                />
                 <span className="truncate">
-                  {active.detailsUnavailable ? "Details unavailable" : `@${active.contact.username ?? "unknown"}`}
+                  {active.detailsUnavailable
+                    ? "Conversa indisponível"
+                    : profiles[active.contact.id]?.name || `@${active.contact.username ?? profiles[active.contact.id]?.username ?? "desconhecido"}`}
                 </span>
+                {!active.detailsUnavailable && (active.contact.username || profiles[active.contact.id]?.username) && (
+                  <a
+                    href={`https://www.instagram.com/${active.contact.username ?? profiles[active.contact.id]?.username}/`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ml-auto shrink-0 rounded-lg border border-border px-2.5 py-1 text-xs font-medium text-muted hover:text-foreground"
+                  >
+                    Abrir no Instagram ↗
+                  </a>
+                )}
               </div>
 
               <div ref={scrollRef} className="min-h-0 flex-1 space-y-2 overflow-y-auto p-4">
