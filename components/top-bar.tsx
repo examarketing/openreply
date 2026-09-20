@@ -9,14 +9,14 @@
 import { usePathname } from "next/navigation";
 
 const pageTitles: Record<string, string> = {
-  "/dashboard": "Dashboard",
-  "/campaigns": "Campaigns",
+  "/dashboard": "Início",
+  "/campaigns": "Automações",
   "/campaigns/new": "New Campaign",
-  "/automations": "Campaigns",
+  "/automations": "Automações",
   "/automations/new": "New Campaign",
-  "/logs": "DM Logs",
-  "/settings": "Settings",
-  "/diagnostics": "Diagnostics",
+  "/logs": "Registro de DMs",
+  "/settings": "Configurações",
+  "/diagnostics": "Diagnóstico",
 };
 
 interface TopBarProps {
@@ -31,7 +31,7 @@ export default function TopBar({
   instagramAccountCount,
 }: TopBarProps) {
   const pathname = usePathname();
-  const title = pageTitles[pathname] ?? "Dashboard";
+  const title = pageTitles[pathname] ?? "Início";
 
   return (
     <header
