@@ -2,53 +2,51 @@ import type { Metadata } from "next";
 import LegalShell from "@/components/legal-shell";
 
 export const metadata: Metadata = {
-  title: "Terms of Service - OpenReply",
-  description:
-    "Terms for using OpenReply's Instagram comment-to-DM campaign software.",
+  title: "Termos de uso · EXA DM automática",
+  description: "Condições de uso do painel interno de DM automática da EXA Marketing.",
 };
 
 export default function TermsPage() {
   return (
     <LegalShell
-      title="Terms of Service"
-      description="These terms define acceptable use for OpenReply's hosted Instagram comment-to-DM campaign service."
-      updatedAt="May 24, 2026"
+      title="Termos de uso"
+      description="Estes termos valem para quem acessa o painel EXA · DM automática. É uma ferramenta interna da EXA Marketing, sem oferta ao público."
+      updatedAt="21 de setembro de 2026"
     >
       <section>
-        <h2 className="text-xl font-bold text-white">Authorized Use</h2>
-        <p className="mt-3">
-          You may use OpenReply only with Instagram professional accounts you
-          own or are authorized to manage. You are responsible for the campaigns,
-          keywords, links, and messages you configure.
+        <h2>Acesso</h2>
+        <p>
+          O acesso é individual, por e-mail autorizado pela EXA, e pode ser
+          revogado a qualquer momento. Quem acessa se compromete a não
+          compartilhar o link de acesso nem usar o painel fora das atividades
+          da EXA e dos experts parceiros.
         </p>
       </section>
 
       <section>
-        <h2 className="text-xl font-bold text-white">Platform Compliance</h2>
-        <p className="mt-3">
-          You agree to follow Meta Platform Terms, Instagram policies, applicable
-          messaging rules, privacy laws, advertising rules, and anti-spam laws.
-          OpenReply may rate-limit, pause, or disable campaigns that create
-          compliance, abuse, security, or deliverability risk.
+        <h2>Uso das contas de Instagram</h2>
+        <p>
+          Só podem ser conectadas contas profissionais cujo administrador
+          autorizou a EXA a operá-las. As automações devem respeitar as
+          Políticas da Plataforma da Meta e os Termos do Instagram: nada de
+          spam, mensagens enganosas ou conteúdo que viole as regras da
+          plataforma. A EXA pode pausar qualquer automação que descumpra isso.
         </p>
       </section>
 
       <section>
-        <h2 className="text-xl font-bold text-white">Availability</h2>
-        <p className="mt-3">
-          OpenReply depends on third-party platforms including Meta, email,
-          hosting, database, and queue providers. We work to operate the
-          service reliably, but uninterrupted availability is not guaranteed.
+        <h2>Limites e responsabilidade</h2>
+        <p>
+          O envio depende da API da Meta, que impõe limites de volume e pode
+          mudar sem aviso. A EXA não garante entrega de todas as mensagens nem
+          disponibilidade contínua do painel, e não se responsabiliza por
+          decisões da Meta sobre as contas conectadas.
         </p>
       </section>
 
       <section>
-        <h2 className="text-xl font-bold text-white">Open-Source Core</h2>
-        <p className="mt-3">
-          The public repository is MIT licensed. Hosted SaaS infrastructure,
-          managed support, agency workflows, analytics, reports, and other paid
-          service features may be provided separately from the open-source core.
-        </p>
+        <h2>Contato</h2>
+        <p>Dúvidas sobre estes termos: contato@exa.marketing.</p>
       </section>
     </LegalShell>
   );

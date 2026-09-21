@@ -2,44 +2,53 @@ import type { Metadata } from "next";
 import LegalShell from "@/components/legal-shell";
 
 export const metadata: Metadata = {
-  title: "Data Deletion - OpenReply",
-  description:
-    "How OpenReply customers can disconnect Instagram and request account or campaign data deletion.",
+  title: "Exclusão de dados · EXA DM automática",
+  description: "Como desconectar uma conta de Instagram e pedir a exclusão dos dados guardados pelo painel.",
 };
 
 export default function DataDeletionPage() {
   return (
     <LegalShell
-      title="Data Deletion"
-      description="Use this page for Meta App Review and customer requests about removing OpenReply account, workspace, Instagram, and campaign data."
-      updatedAt="May 24, 2026"
+      title="Exclusão de dados"
+      description="Como remover uma conta de Instagram do painel e apagar os dados relacionados a ela ou a você."
+      updatedAt="21 de setembro de 2026"
     >
       <section>
-        <h2 className="text-xl font-bold text-white">Disconnect Instagram</h2>
-        <p className="mt-3">
-          Sign in, open Settings, and select Disconnect. This removes the stored
-          Instagram connection token and stops campaigns from sending private
-          replies for that workspace.
+        <h2>Desconectar uma conta de Instagram</h2>
+        <p>
+          Quem administra a conta entra no painel, abre Configurações e clica
+          em Desconectar. O token de acesso é apagado na hora e as automações
+          daquela conta param de enviar mensagens. A autorização também pode
+          ser removida direto no Instagram, em Configurações → Segurança →
+          Apps e sites.
         </p>
       </section>
 
       <section>
-        <h2 className="text-xl font-bold text-white">Delete Workspace Data</h2>
-        <p className="mt-3">
-          To delete workspace, campaign, log, webhook, billing reference, and
-          operational diagnostic data, contact support from the email address
-          used to sign in. Include the workspace name and the Instagram username
-          connected to the workspace.
+        <h2>Apagar automações, registros e mensagens</h2>
+        <p>
+          Para excluir automações, registros de envio, comentários e conversas
+          guardados, escreva para contato@exa.marketing a partir do e-mail
+          autorizado, informando a conta. A exclusão é confirmada por e-mail
+          em até 30 dias.
         </p>
       </section>
 
       <section>
-        <h2 className="text-xl font-bold text-white">Verification</h2>
-        <p className="mt-3">
-          We may ask you to verify control of the email address or connected
-          business account before deleting data. Deletion requests are processed
-          as quickly as practical unless retention is required for legal,
-          billing, fraud prevention, or security reasons.
+        <h2>Se você comentou ou mandou mensagem para uma conta conectada</h2>
+        <p>
+          Você pode pedir que seus dados (comentário, mensagens, identificador)
+          sejam apagados do painel enviando um e-mail para contato@exa.marketing
+          com o seu @ do Instagram e a conta com que interagiu. Respondemos com
+          a confirmação em até 30 dias.
+        </p>
+      </section>
+
+      <section>
+        <h2>Pedidos vindos da Meta</h2>
+        <p>
+          Pedidos de exclusão encaminhados pela Meta são tratados pelo mesmo
+          processo, com confirmação enviada pelo canal de origem.
         </p>
       </section>
     </LegalShell>

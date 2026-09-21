@@ -2,73 +2,80 @@ import type { Metadata } from "next";
 import LegalShell from "@/components/legal-shell";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - OpenReply",
+  title: "Política de privacidade · EXA DM automática",
   description:
-    "How OpenReply handles Instagram account data, webhook payloads, billing data, and customer campaign information.",
+    "Como a EXA Marketing trata os dados das contas de Instagram conectadas ao painel de DM automática.",
 };
 
 export default function PrivacyPage() {
   return (
     <LegalShell
-      title="Privacy Policy"
-      description="OpenReply helps businesses send Meta-compliant private replies when people comment on connected Instagram posts or reels."
-      updatedAt="May 24, 2026"
+      title="Política de privacidade"
+      description="O painel EXA · DM automática é uma ferramenta interna da EXA Marketing (exa.marketing) usada para responder, por mensagem direta, quem comenta nos posts das contas de Instagram administradas pela EXA e pelos experts parceiros."
+      updatedAt="21 de setembro de 2026"
     >
       <section>
-        <h2 className="text-xl font-bold text-white">Data We Collect</h2>
-        <p className="mt-3">
-          We collect account email addresses for authentication, workspace and
-          billing metadata, connected Instagram account identifiers, encrypted
-          Instagram access tokens, campaign settings, webhook payloads,
-          comments needed to process campaigns, delivery logs, and operational
-          diagnostics.
+        <h2>Quem opera o painel</h2>
+        <p>
+          EXA Marketing, Brasil. Contato: contato@exa.marketing. O painel só é
+          acessado por pessoas da equipe da EXA autorizadas por e-mail; não há
+          cadastro aberto ao público.
         </p>
       </section>
 
       <section>
-        <h2 className="text-xl font-bold text-white">How We Use Data</h2>
-        <p className="mt-3">
-          We use this data to authenticate users, connect Instagram
-          integrations, match comment keywords, send private replies through the
-          official Meta APIs, prevent duplicate sends, troubleshoot failures,
-          and protect the service.
+        <h2>Quais dados coletamos</h2>
+        <ul>
+          <li>E-mail de quem acessa o painel, para autenticação por link de acesso.</li>
+          <li>Identificadores e nome de usuário das contas profissionais de Instagram conectadas, e o token de acesso da Meta, guardado criptografado.</li>
+          <li>Comentários recebidos nos posts dessas contas (texto, autor e identificador), necessários para reconhecer a palavra-chave e responder.</li>
+          <li>Mensagens diretas trocadas entre a conta conectada e as pessoas que interagiram com ela, quando lidas pela caixa de entrada do painel.</li>
+          <li>Registro das mensagens enviadas pela automação, cliques nos links rastreados e eventos técnicos (webhooks, erros).</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Para que usamos</h2>
+        <p>
+          Exclusivamente para operar as automações de comentário → mensagem
+          direta pela API oficial da Meta: identificar comentários com a
+          palavra-chave configurada, enviar a resposta pública e a mensagem
+          privada, evitar envios duplicados, medir cliques e diagnosticar
+          falhas. Não vendemos, alugamos nem compartilhamos esses dados com
+          terceiros, e não os usamos para publicidade.
         </p>
       </section>
 
       <section>
-        <h2 className="text-xl font-bold text-white">Instagram And Meta Data</h2>
-        <p className="mt-3">
-          OpenReply does not ask for Instagram passwords, scrape Instagram, or
-          use browser automation. Instagram tokens are encrypted at rest and are
-          used only to perform actions authorized by the connected business
-          account.
+        <h2>Dados da Meta / Instagram</h2>
+        <p>
+          O acesso às contas é feito pela API do Instagram com login do
+          Instagram, com as permissões concedidas pelo administrador de cada
+          conta. Seguimos as Políticas da Plataforma da Meta. O token pode ser
+          revogado a qualquer momento pelo administrador da conta, no próprio
+          painel (Configurações → Desconectar) ou nas configurações do
+          Instagram.
         </p>
       </section>
 
       <section>
-        <h2 className="text-xl font-bold text-white">Subprocessors</h2>
-        <p className="mt-3">
-          The production service may use hosting, database, Redis queue, email,
-          and observability providers such as Vercel, Railway, PostgreSQL,
-          Redis, and Resend. These providers process data only as needed to run
-          the service.
+        <h2>Onde ficam e por quanto tempo</h2>
+        <p>
+          Os dados ficam em banco de dados hospedado na Railway (EUA) com
+          acesso restrito à rede interna do projeto, e transitam sempre por
+          HTTPS. Registros de comentários e mensagens são mantidos enquanto a
+          conta estiver conectada e as automações existirem; ao desconectar a
+          conta, o token é apagado imediatamente.
         </p>
       </section>
 
       <section>
-        <h2 className="text-xl font-bold text-white">Retention And Deletion</h2>
-        <p className="mt-3">
-          Customers can disconnect Instagram from settings, which removes the
-          stored Instagram connection and stops campaigns. For account or data
-          deletion, follow the Data Deletion page linked from the footer.
-        </p>
-      </section>
-
-      <section>
-        <h2 className="text-xl font-bold text-white">Contact</h2>
-        <p className="mt-3">
-          For privacy questions, contact the repository owner through GitHub or
-          the support email configured for the hosted OpenReply service.
+        <h2>Seus direitos</h2>
+        <p>
+          Qualquer pessoa cujos dados apareçam no painel (por exemplo, quem
+          comentou num post) pode pedir acesso, correção ou exclusão pelo
+          e-mail contato@exa.marketing. Veja também a página de exclusão de
+          dados.
         </p>
       </section>
     </LegalShell>

@@ -8,6 +8,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { sair } from "@/app/actions/sair";
 
 // Ícones inline (traços simples, 20px) — sem dependência extra.
 const ICONS: Record<string, string> = {
@@ -112,9 +113,20 @@ export default function Sidebar({
           })}
         </nav>
 
-        <div className="px-5 py-4 border-t border-border">
-          <p className="text-sm text-foreground truncate">{workspaceName}</p>
-          <p className="text-xs text-muted">Stack própria da EXA · dm.exa.marketing</p>
+        <div className="flex items-center justify-between gap-3 px-5 py-4 border-t border-border">
+          <div className="min-w-0">
+            <p className="text-sm text-foreground truncate">{workspaceName}</p>
+            <p className="text-xs text-muted">Stack própria da EXA · dm.exa.marketing</p>
+          </div>
+          <form action={sair}>
+            <button
+              type="submit"
+              title="Sair do painel"
+              className="shrink-0 rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-muted transition-colors hover:border-[#101828] hover:text-foreground"
+            >
+              Sair
+            </button>
+          </form>
         </div>
       </aside>
     </>

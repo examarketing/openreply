@@ -1,22 +1,27 @@
 import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
+
+// Inter servida pelo próprio domínio (baixada no build): sem pedido ao Google
+// a cada visita e sem precisar liberar fonts.googleapis.com na CSP.
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
   title: "EXA · DM automática do Instagram",
   description:
     "Automação de comentário → DM no Instagram da EXA, pela API oficial da Meta.",
-  keywords: [
-    "instagram automation",
-    "comment to DM",
-    "instagram private replies",
-    "social commerce",
-    "manychat alternative",
-  ],
+  // Painel interno: fora de buscador (o cabeçalho X-Robots-Tag reforça).
+  robots: { index: false, follow: false },
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     title: "EXA DM",
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
   },
   icons: {
     icon: [
@@ -42,15 +47,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className="h-full dark">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="pt-BR" className={`h-full ${inter.variable}`}>
       <body
         className="min-h-full bg-background text-foreground font-sans antialiased"
         // Clears the home indicator when installed; 0 everywhere else.

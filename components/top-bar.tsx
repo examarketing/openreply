@@ -60,7 +60,7 @@ export default function TopBar({
       {instagramAccountCount > 0 ? (
         <p className="shrink-0 truncate text-sm text-muted">
           {instagramAccountCount > 1
-            ? `${instagramAccountCount} accounts`
+            ? `${instagramAccountCount} contas`
             : `@${instagramUsername}`}
         </p>
       ) : (

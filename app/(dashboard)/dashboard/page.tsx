@@ -128,14 +128,22 @@ export default function DashboardPage() {
     const params = new URLSearchParams();
     if (selectedAccountId !== "all") params.set("instagramAccountId", selectedAccountId);
     params.set("days", String(days));
-    setLoading(true);
+    // Estado só muda dentro da resposta (nunca de forma síncrona no efeito),
+    // e a resposta de um pedido antigo é ignorada se o filtro já mudou.
+    let ativo = true;
     fetch(`/api/dashboard/stats?${params}`)
       .then((r) => r.json())
       .then((data) => {
+        if (!ativo) return;
         if (data.success) setStats(data.data);
       })
       .catch(console.error)
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (ativo) setLoading(false);
+      });
+    return () => {
+      ativo = false;
+    };
   }, [selectedAccountId, days]);
 
   if (loading && !stats) {

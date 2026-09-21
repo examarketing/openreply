@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db/client";
 import { getDMQueue, getRedisConnection } from "@/lib/queue/client";
 import { getWorkerHealth } from "@/lib/ops/worker-health";
@@ -56,7 +57,7 @@ async function checkQueue(): Promise<HealthCheck & { counts?: unknown }> {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const [database, redis, queue, worker] = await Promise.all([
     checkDatabase(),
     checkRedis(),
@@ -75,16 +76,22 @@ export async function GET() {
     queue.status === "ok" &&
     worker.healthy;
 
+  // Detalhes (mensagens de erro do banco, fila, heartbeat) só pra quem está
+  // logado ou pro cron interno; pra fora, apenas ok/degraded.
+  const cronSecret = process.env.CRON_SECRET || process.env.NEXTAUTH_SECRET;
+  const viaCron =
+    Boolean(cronSecret) &&
+    request.headers.get("authorization") === `Bearer ${cronSecret}`;
+  const session = viaCron ? null : await auth().catch(() => null);
+  const detailed = viaCron || Boolean(session?.user?.id);
+
   return NextResponse.json(
-    {
-      status: healthy ? "ok" : "degraded",
-      checks: {
-        database,
-        redis,
-        queue,
-        worker,
-      },
-    },
+    detailed
+      ? {
+          status: healthy ? "ok" : "degraded",
+          checks: { database, redis, queue, worker },
+        }
+      : { status: healthy ? "ok" : "degraded" },
     { status: healthy ? 200 : 503 }
   );
 }
